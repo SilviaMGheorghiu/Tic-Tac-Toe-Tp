@@ -1,9 +1,13 @@
 #include <stdio.h>
 #include "game.h"
+#include "ai.h"
+#include <stdlib.h>
+#include <time.h>
 
 int main() {
     char jucator = 'X';
     int dim;
+    srand(time(NULL));
 
     printf("Alege dimensiunea tablei (3 sau 4): ");
     scanf("%d", &dim);
@@ -11,6 +15,18 @@ int main() {
     if(dim != 3 && dim != 4) {
         printf("Dimensiune invalida! Se foloseste 3.\n");
         dim = 3;
+    }
+
+    int mod;
+
+    printf("Alege modul de joc:\n");
+    printf("1. Player vs Player\n");
+    printf("2. Player vs AI\n");
+    scanf("%d", &mod);
+
+    if(mod != 1 && mod != 2) {
+        printf("Mod invalid! Se foloseste Player vs Player.\n");
+        mod = 1;
     }
 
     initTabla(dim);  // IMPORTANT: inițializează înainte
@@ -38,7 +54,12 @@ int main() {
 
     while(1) {
         afiseazaTabla();
-        mutare(jucator);
+
+        if(mod == 2 && jucator == 'O') {
+            mutareAI();
+        } else {
+            mutare(jucator);
+        }
 
         if(verificaCastigator()) {
             afiseazaTabla();

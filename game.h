@@ -2,8 +2,8 @@
 // Created by User on 3/29/2026.
 //
 
-#ifndef X_SI_0_GAME_H
-#define X_SI_0_GAME_H
+#ifndef X_SI_0_ADV_GAME_H
+#define X_SI_0_ADV_GAME_H
 
 #define MAX 4
 
@@ -12,9 +12,11 @@ extern int dimensiune;
 
 void initTabla(int dim);
 void afiseazaTabla();
+extern char tabla[MAX][MAX];
+extern int dimensiune;
 int verificaCastigator();
 int remiza();
 void mutare(char jucator);
 void afiseazaInstructiuni(int dim);
 
-#endif //X_SI_0_GAME_H
+#endif //X_SI_0_ADV_GAME_H

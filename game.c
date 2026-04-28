@@ -3,6 +3,7 @@
 //
 
 #include <stdio.h>
+#include <stdlib.h>
 #include "game.h"
 
 char tabla[MAX][MAX];
@@ -142,5 +143,6 @@ void afiseazaInstructiuni(int dim) {
     printf("\n--------------- Istructiunii ----------------");
     printf("\n 1. Fiecare loc gol este o pozitie (1-%d)", dim*dim);
     printf("\n 2. Pentru a juca se introduce pozitia (1-%d)", dim*dim);
+    printf("\n 3. Pentru optiunea AI jucatorul va fi \033[31mX\033[0m");
     printf("\n---------------------------------------------\n\n");
 }
