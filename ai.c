@@ -6,7 +6,6 @@
 #include <stdlib.h>
 #include "game.h"
 
-// functie interna (nu o punem in header)
 int poateCastiga(char simbol) {
     for(int i = 0; i < dimensiune; i++) {
         for(int j = 0; j < dimensiune; j++) {

@@ -5,7 +5,6 @@
 #include <time.h>
 
 int main() {
-    char jucator = 'X';
     int dim;
     srand(time(NULL));
 
@@ -16,6 +15,9 @@ int main() {
         printf("Dimensiune invalida! Se foloseste 3.\n");
         dim = 3;
     }
+
+    initTabla(dim);
+    afiseazaInstructiuni(dim);
 
     int mod;
 
@@ -29,55 +31,24 @@ int main() {
         mod = 1;
     }
 
-    initTabla(dim);  // IMPORTANT: inițializează înainte
+    int modScor;
 
-    // 👉 AICI pui ghidul
-    char raspuns;
+    printf("Alege tipul de joc:\n");
+    printf("1. Joc simplu\n");
+    printf("2. Joc cu scor (best of 3)\n");
+    scanf("%d", &modScor);
 
-    if(dim) {
-        do {
-            printf("Vrei sa vezi instructiuni? (Y/N): ");
-            scanf(" %c", &raspuns);
-
-            if(raspuns != 'Y' && raspuns != 'y' &&
-               raspuns != 'N' && raspuns != 'n') {
-                printf("Te rog introdu doar Y sau N!\n");
-               }
-
-        } while(raspuns != 'Y' && raspuns != 'y' &&
-                raspuns != 'N' && raspuns != 'n');
-
-        if(raspuns == 'Y' || raspuns == 'y') {
-            afiseazaInstructiuni(dim);
-        }
+    if(modScor != 1 && mod != 2) {
+        printf("Mod invalid! Se foloseste joc simplu.\n");
+        modScor = 1;
     }
 
-    while(1) {
-        afiseazaTabla();
-
-        if(mod == 2 && jucator == 'O') {
-            mutareAI();
-        } else {
-            mutare(jucator);
-        }
-
-        if(verificaCastigator()) {
-            afiseazaTabla();
-
-            if (jucator == 'X')
-                printf("Jucatorul \033[31m%c\033[0m a castigat!\n", jucator);
-            else if (jucator == 'O')
-                printf("Jucatorul \033[34m%c\033[0m a castigat!\n", jucator);
-            break;
-        }
-
-        if(remiza()) {
-            afiseazaTabla();
-            printf("Remiza!\n");
-            break;
-        }
-
-        jucator = (jucator == 'X') ? 'O' : 'X';
+    if(modScor == 2) {
+        joacaMeci(mod, dim);
+    }
+    else {
+        initTabla(dim);
+        joacaRunda(mod);
     }
 
     return 0;
