@@ -22,4 +22,7 @@ void afiseazaInstructiuni(int dim);
 void joacaMeci(int mod, int dim);
 char joacaRunda(int mod);
 
+//AI
+extern int nivelAI;
+
 #endif //X_SI_0_GAME_H

@@ -6,11 +6,11 @@
 #include <stdlib.h>
 #include "game.h"
 #include "ai.h"
+#include "ai2.h"
 
 char tabla[MAX][MAX];
 int dimensiune;
 
-// Initializare tabla
 void initTabla(int dim) {
     dimensiune = dim;
     char c = '1';
@@ -25,7 +25,7 @@ void initTabla(int dim) {
 // Afisare tabla
 void afiseazaTabla() {
     printf("\n");
-
+    int count = 0;
     for(int i = 0; i < dimensiune; i++) {
         for(int j = 0; j < dimensiune; j++) {
             if(tabla[i][j] == 'X')
@@ -33,8 +33,15 @@ void afiseazaTabla() {
             else if(tabla[i][j] == 'O')
                 printf("\033[34m %c \033[0m", tabla[i][j]); // albastru
             else
-                printf("   ");
+            {
+                if (count < 10)
+                printf(" %d ", count);
+
+                else
+                    printf(" %d", count);
+            }
             if(j < dimensiune - 1) printf("|");
+            count ++;
         }
         printf("\n");
 
@@ -142,9 +149,8 @@ void mutare(char jucator) {
 // Guide
 void textInstructiuni(int dim) {
     printf("\n--------------- Istructiunii ----------------");
-    printf("\n 1. Fiecare loc gol este o pozitie (1-%d)", dim*dim);
-    printf("\n 2. Pentru a juca se introduce pozitia (1-%d)", dim*dim);
-    printf("\n 3. Pentru optiunea AI jucatorul va fi \033[31mX\033[0m");
+    printf("\n 1. Pentru a juca se introduce pozitia (1-%d)", dim*dim);
+    printf("\n 2. Pentru optiunea AI jucatorul va fi \033[31mX\033[0m");
     printf("\n---------------------------------------------\n\n");
 }
 
@@ -178,10 +184,20 @@ char joacaRunda(int mod) {
 
         afiseazaTabla();
 
-        if(mod == 2 && jucator == 'O')
+      /*  if(mod == 2 && jucator == 'O')
             mutareAI();
         else
+            mutare(jucator);*/
+        if(mod == 2 && jucator == 'O') {
+
+            if(nivelAI == 1)
+                mutareAI();    // AI usor
+            else
+                mutareAI2();   // AI mediu
+
+        } else {
             mutare(jucator);
+        }
 
         if(verificaCastigator()) {
             afiseazaTabla();
@@ -207,9 +223,8 @@ void joacaMeci(int mod, int dim) {
 
     int scorX = 0;
     int scorO = 0;
-    int runda = 1;
 
-    while(1) {
+    for(int runda = 1; runda <= 3; runda++) {
 
         printf("\n=== RUNDA %d ===\n", runda);
 
@@ -221,20 +236,14 @@ void joacaMeci(int mod, int dim) {
         else if(rezultat == 'O') scorO++;
 
         printf("Scor: \033[31mX\033[0m = %d | \033[34mO\033[0m = %d\n", scorX, scorO);
-
-        // conditie best of 3
-        if(scorX == 2 || scorO == 2) {
-
-            printf("\n=== MECI TERMINAT ===\n");
-
-            if(scorX > scorO)
-                printf("Castigator final: \033[31mX\033[0m\n");
-            else
-                printf("Castigator final: \033[31mO\033[0m\n");
-
-            break;
-        }
-
-        runda++;
     }
+
+    printf("\n=== MECI TERMINAT ===\n");
+
+    if(scorX > scorO)
+        printf("Castigator final: \033[31mX\033[0m\n\n");
+    else if(scorO > scorX)
+        printf("Castigator final: \033[34mO\033[0m\n\n");
+    else
+        printf("Meci terminat la egalitate!\n");
 }
