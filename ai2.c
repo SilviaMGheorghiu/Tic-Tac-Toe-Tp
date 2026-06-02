@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "game.h"
+#include "powerUp.h"
 
 // cauta mutare castigatoare
 int cautaMutare(char simbol) {
@@ -38,7 +39,28 @@ void mutareAI2() {
 
     int poz;
 
-    // 1. castiga
+    if(modSpecial && putereActiva) {
+
+        for(int i = 0; i < dimensiune; i++) {
+            for(int j = 0; j < dimensiune; j++) {
+
+                if(tabla[i][j] == SIMBOL_SPECIAL) {
+
+                    tabla[i][j] = 'O';
+
+                    putereActiva = 0;
+                    pozitieSpeciala = -1;
+
+                    printf("AI MEDIU foloseste puterea speciala\n");
+                    folosestePutereAI();
+
+                    return;
+                }
+            }
+        }
+    }
+
+    // castiga
     poz = cautaMutare('O');
     if(poz != -1) {
         tabla[poz / dimensiune][poz % dimensiune] = 'O';
@@ -46,7 +68,7 @@ void mutareAI2() {
         return;
     }
 
-    // 2. blocheaza
+    // blocheaza
     poz = cautaMutare('X');
     if(poz != -1) {
         tabla[poz / dimensiune][poz % dimensiune] = 'O';
@@ -54,7 +76,7 @@ void mutareAI2() {
         return;
     }
 
-    // 3. centru
+    // centru
     if(dimensiune % 2 == 1) {
         int c = dimensiune / 2;
         if(liber(c, c)) {
@@ -64,7 +86,7 @@ void mutareAI2() {
         }
     }
 
-    // 4. colturi
+    //  colturi
     int colturi[4][2] = {
         {0,0},
         {0,dimensiune-1},
@@ -83,7 +105,7 @@ void mutareAI2() {
         }
     }
 
-    // 5. random fallback
+    // random fallback
     int linie, coloana;
     do {
         int r = rand() % (dimensiune * dimensiune);

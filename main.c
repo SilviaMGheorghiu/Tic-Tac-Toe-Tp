@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include "game.h"
-#include "ai.h"
 #include <stdlib.h>
 #include <time.h>
+#include "powerUp.h"
 
 int nivelAI;
 
@@ -30,11 +30,40 @@ int main() {
         printf("\033[33mAlege modul de joc:\033[0m\n");
         printf("1. Player vs Player\n");
         printf("2. Player vs AI\n");
+
+        if(dim == 3)
+        {
+            printf("\033[36m3. Mod powerup PvP\033[0m\n");
+            printf("\033[36m4. Mod powerup vs AI\033[0m\n");
+        }
+
         scanf("%d", &mod);
 
-        if(mod != 1 && mod != 2) {
-            printf("Mod invalid! Se foloseste Player vs Player.\n");
-            mod = 1;
+        if(dim == 3) {
+
+            if(mod < 1 || mod > 4) {
+                printf("Mod invalid! Se foloseste Player vs Player.\n");
+                mod = 1;
+            }
+
+        }
+        else {
+
+            if(mod != 1 && mod != 2) {
+                printf("Mod invalid! Se foloseste Player vs Player.\n");
+                mod = 1;
+            }
+        }
+
+        modSpecial = 0;
+
+        if(mod == 3 || mod == 4)
+        {
+            modSpecial = 1;
+
+            printf("\n\033[1;36mMOD SPECIAL ACTIVAT!\033[0m\n");
+            printf("Pe parcursul jocului poate aparea o putere speciala.\n");
+            printf("Jucatorul care o captureaza poate sterge o piesa de pe tabla.\n\n");
         }
 
         nivelAI = 1;
@@ -43,9 +72,10 @@ int main() {
             printf("\033[33mAlege nivel AI:\033[0m\n");
             printf("1. Usor\n");
             printf("2. Mediu\n");
+            printf("3. Hard\n");
             scanf("%d", &nivelAI);
 
-            if(nivelAI != 1 && nivelAI != 2) {
+            if(nivelAI < 1 || nivelAI > 3) {
                 printf("Nivel invalid! Se foloseste usor.\n");
                 nivelAI = 1;
             }

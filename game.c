@@ -7,6 +7,8 @@
 #include "game.h"
 #include "ai.h"
 #include "ai2.h"
+#include "ai3.h"
+#include "powerUp.h"
 
 char tabla[MAX][MAX];
 int dimensiune;
@@ -22,16 +24,17 @@ void initTabla(int dim) {
     }
 }
 
-// Afisare tabla
 void afiseazaTabla() {
     printf("\n");
-    int count = 0;
+    int count = 1;
     for(int i = 0; i < dimensiune; i++) {
         for(int j = 0; j < dimensiune; j++) {
             if(tabla[i][j] == 'X')
                 printf("\033[31m %c \033[0m", tabla[i][j]); // rosu
             else if(tabla[i][j] == 'O')
                 printf("\033[34m %c \033[0m", tabla[i][j]); // albastru
+            else if(tabla[i][j] == SIMBOL_SPECIAL)
+                printf("\033[1;32m %c \033[0m", tabla[i][j]);
             else
             {
                 if (count < 10)
@@ -108,41 +111,64 @@ int remiza() {
 
 // Mutare
 void mutare(char jucator) {
+
     int poz;
     int rezultat;
 
-    if (jucator == 'X')
-        printf("Jucator \033[31m%c\033[0m , alege o pozitie (1-%d): ", jucator, dimensiune * dimensiune);
-    else if (jucator == 'O')
-        printf("Jucator \033[34m%c\033[0m , alege o pozitie (1-%d): ", jucator, dimensiune * dimensiune);
+    while(1) {
 
-    rezultat = scanf("%d", &poz);
+        if(jucator == 'X')
+            printf("Jucator \033[31m%c\033[0m, alege o pozitie (1-%d): ",
+                   jucator, dimensiune * dimensiune);
+        else
+            printf("Jucator \033[34m%c\033[0m, alege o pozitie (1-%d): ",
+                   jucator, dimensiune * dimensiune);
 
-    // daca NU a citit un numar
-    if (rezultat != 1) {
-        printf("Input invalid! Introdu un numar.\n");
+        rezultat = scanf("%d", &poz);
 
-        // curata bufferul
-        while(getchar() != '\n');
+        // input invalid
+        if(rezultat != 1) {
 
-        mutare(jucator);
-        return;
-    }
+            printf("Input invalid! Introdu un numar.\n");
 
-    if(poz < 1 || poz > dimensiune * dimensiune) {
-        printf("Pozitie invalida!\n");
-        mutare(jucator);
-        return;
-    }
+            while(getchar() != '\n');
 
-    int linie = (poz - 1) / dimensiune;
-    int coloana = (poz - 1) % dimensiune;
+            continue;
+        }
 
-    if(tabla[linie][coloana] != 'X' && tabla[linie][coloana] != 'O') {
-        tabla[linie][coloana] = jucator;
-    } else {
+        if(poz < 1 || poz > dimensiune * dimensiune) {
+
+            printf("Pozitie invalida!\n");
+            continue;
+        }
+
+        int linie = (poz - 1) / dimensiune;
+        int coloana = (poz - 1) % dimensiune;
+
+        // MOD SPECIAL
+        if(dimensiune == 3 &&
+           putereActiva &&
+           tabla[linie][coloana] == SIMBOL_SPECIAL) {
+
+            tabla[linie][coloana] = jucator;
+
+            putereActiva = 0;
+            pozitieSpeciala = -1;
+
+            folosestePutere(jucator);
+
+            break;
+           }
+
+        // mutare normala
+        if(tabla[linie][coloana] != 'X' &&
+           tabla[linie][coloana] != 'O') {
+
+            tabla[linie][coloana] = jucator;
+            break;
+           }
+
         printf("Pozitie ocupata!\n");
-        mutare(jucator);
     }
 }
 
@@ -180,24 +206,32 @@ char joacaRunda(int mod) {
 
     char jucator = 'X';
 
+    int nrMutari = 0;
+
+    putereActiva = 0;
+    putereAparuta = 0;
+    pozitieSpeciala = -1;
+
     while(1) {
 
         afiseazaTabla();
 
-      /*  if(mod == 2 && jucator == 'O')
-            mutareAI();
-        else
-            mutare(jucator);*/
-        if(mod == 2 && jucator == 'O') {
+        if((mod == 2 || mod == 4) && jucator == 'O') {
 
             if(nivelAI == 1)
-                mutareAI();    // AI usor
+                mutareAI();
+            else if(nivelAI == 2)
+                mutareAI2();
             else
-                mutareAI2();   // AI mediu
+                mutareAI3();
 
-        } else {
+        }
+        else {
+
             mutare(jucator);
         }
+
+        nrMutari++;
 
         if(verificaCastigator()) {
             afiseazaTabla();
@@ -213,6 +247,11 @@ char joacaRunda(int mod) {
             afiseazaTabla();
             printf("Remiza!\n");
             return 'D';
+        }
+
+        if(modSpecial && dimensiune == 3 && nrMutari == 3 && !putereAparuta)
+        {
+            genereazaPutere();
         }
 
         jucator = (jucator == 'X') ? 'O' : 'X';
