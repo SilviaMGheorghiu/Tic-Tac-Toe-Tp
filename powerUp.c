@@ -7,10 +7,10 @@
 #include <stdlib.h>
 #include "game.h"
 
-int putereActiva = 0;
-int pozitieSpeciala = -1;
 int modSpecial = 0;
+int putereActiva = 0;
 int putereAparuta = 0;
+int pozitieSpeciala = -1;
 
 void genereazaPutere() {
 
@@ -123,9 +123,12 @@ void folosestePutereAI() {
 
         if(tabla[i][j] == 'X') {
 
+            int pozitie = i * dimensiune + j + 1;
+
             tabla[i][j] = ' ';
 
-            printf("\033[32mAI a sters un colt!\033[0m\n");
+            printf("\033[32mAI a sters coltul de la pozitia %d!\033[0m\n",
+                   pozitie);
 
             return;
         }
@@ -137,9 +140,12 @@ void folosestePutereAI() {
 
             if(tabla[i][j] == 'X') {
 
+                int pozitie = i * dimensiune + j + 1;
+
                 tabla[i][j] = ' ';
 
-                printf("\033[32mAI a sters o piesa!\033[0m\n");
+                printf("\033[32mAI a sters piesa de la pozitia %d!\033[0m\n",
+                       pozitie);
 
                 return;
             }

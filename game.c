@@ -216,15 +216,23 @@ char joacaRunda(int mod) {
 
         afiseazaTabla();
 
-        if((mod == 2 || mod == 4) && jucator == 'O') {
+        if(jucator == 'O') {
 
-            if(nivelAI == 1)
-                mutareAI();
-            else if(nivelAI == 2)
+            if(mod == 2) {
+
+                if(nivelAI == 1)
+                    mutareAI();
+                else if(nivelAI == 2)
+                    mutareAI2();
+                else
+                    mutareAI3();
+            }
+
+            else if(mod == 4) {
+
+                // Mod special -> AI mediu fix
                 mutareAI2();
-            else
-                mutareAI3();
-
+            }
         }
         else {
 
